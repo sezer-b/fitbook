@@ -1,0 +1,12 @@
+spring.application.name: backend
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5438/postgres
+    username: blueprint
+    password: blueprint
+
+spring.jpa:
+  hibernate:
+    ddl-auto: validate
+  open-in-view: false

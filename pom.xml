@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.babat</groupId>
-    <name>Spring Boot Angular Blueprint</name>
-    <artifactId>spring-boot-angular-blueprint</artifactId>
+    <name>Fitbook</name>
+    <artifactId>fitbook</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 

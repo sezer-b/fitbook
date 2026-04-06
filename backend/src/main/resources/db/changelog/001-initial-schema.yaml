@@ -3,6 +3,7 @@ databaseChangeLog:
   - changeSet:
       id: 001-enable-postgis
       author: sezer
+      comment: Enable PostGIS extension, if not already enabled.
       changes:
         - sql:
             sql: CREATE EXTENSION IF NOT EXISTS postgis;

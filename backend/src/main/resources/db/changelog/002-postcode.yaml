@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010-add-postcode
+      author: sezer (generated)
+      comment: Add postcode to courses
+      changes:
+        - addColumn:
+            tableName: courses
+            columns:
+              - column:
+                  name: postcode
+                  type: varchar(20)

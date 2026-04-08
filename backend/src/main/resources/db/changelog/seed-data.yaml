@@ -1,0 +1,120 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: seed-categories
+      author: sezer
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO categories (id, name) VALUES
+              (gen_random_uuid(), 'Yoga'),
+              (gen_random_uuid(), 'Pilates'),
+              (gen_random_uuid(), 'CrossFit'),
+              (gen_random_uuid(), 'HIIT'),
+              (gen_random_uuid(), 'Boxing');
+
+  - changeSet:
+      id: seed-providers
+      author: sezer
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO providers (id, email, business_name, description, auth_provider, email_verified, subscription_status, created_at, updated_at) VALUES
+              ('a1000000-0000-0000-0000-000000000001', 'salzburg.yoga@babat.dev', 'Salzburg Yoga Studio', 'Premium yoga studio in the heart of Salzburg', 'LOCAL', true, 'ACTIVE', now(), now()),
+              ('a1000000-0000-0000-0000-000000000002', 'vienna.fitness@babat.dev', 'Vienna Fitness Club', 'High energy fitness classes in Vienna', 'LOCAL', true, 'ACTIVE', now(), now()),
+              ('a1000000-0000-0000-0000-000000000003', 'munich.sports@babat.dev', 'Munich Sports Center', 'Your home for sports and wellness in Munich', 'LOCAL', true, 'ACTIVE', now(), now());
+
+  - changeSet:
+      id: seed-courses
+      author: sezer
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO courses (id, provider_id, category_id, name, description, address, city, postcode, country, capacity_per_slot, slot_duration_minutes, schedule_config, start_date, end_date, status, location, created_at, updated_at)
+              VALUES
+              (
+                'b1000000-0000-0000-0000-000000000001',
+                'a1000000-0000-0000-0000-000000000001',
+                (SELECT id FROM categories WHERE name = 'Yoga'),
+                'Morning Flow Yoga',
+                'Start your day with an energising yoga flow suitable for all levels.',
+                'Linzer Gasse 10', 'Salzburg', '5020', 'AT', 12, 60,
+                '{"rules": [{"dayOfWeek": 1, "startTime": "07:00"}, {"dayOfWeek": 3, "startTime": "07:00"}, {"dayOfWeek": 5, "startTime": "07:00"}]}',
+                '2026-01-01', '2026-12-31', 'ACTIVE',
+                ST_MakePoint(13.0550, 47.8095)::geography,
+                now(), now()
+              ),
+              (
+                'b1000000-0000-0000-0000-000000000002',
+                'a1000000-0000-0000-0000-000000000001',
+                (SELECT id FROM categories WHERE name = 'Pilates'),
+                'Core Pilates',
+                'Strengthen your core with our expert-led pilates sessions.',
+                'Getreidegasse 5', 'Salzburg', '5020', 'AT', 10, 50,
+                '{"rules": [{"dayOfWeek": 2, "startTime": "09:00"}, {"dayOfWeek": 4, "startTime": "09:00"}]}',
+                '2026-01-01', '2026-12-31', 'ACTIVE',
+                ST_MakePoint(13.0470, 47.8003)::geography,
+                now(), now()
+              ),
+              (
+                'b1000000-0000-0000-0000-000000000003',
+                'a1000000-0000-0000-0000-000000000002',
+                (SELECT id FROM categories WHERE name = 'CrossFit'),
+                'Vienna CrossFit WOD',
+                'Intense daily workouts for all fitness levels.',
+                'Mariahilfer Strasse 100', 'Vienna', '1060', 'AT', 15, 60,
+                '{"rules": [{"dayOfWeek": 1, "startTime": "06:00"}, {"dayOfWeek": 3, "startTime": "06:00"}, {"dayOfWeek": 5, "startTime": "06:00"}]}',
+                '2026-01-01', '2026-12-31', 'ACTIVE',
+                ST_MakePoint(16.3538, 48.1973)::geography,
+                now(), now()
+              ),
+              (
+                'b1000000-0000-0000-0000-000000000004',
+                'a1000000-0000-0000-0000-000000000002',
+                (SELECT id FROM categories WHERE name = 'HIIT'),
+                'Vienna HIIT Express',
+                '45 minutes of high intensity interval training to burn maximum calories.',
+                'Praterstrasse 20', 'Vienna', '1020', 'AT', 20, 45,
+                '{"rules": [{"dayOfWeek": 2, "startTime": "07:00"}, {"dayOfWeek": 4, "startTime": "07:00"}, {"dayOfWeek": 6, "startTime": "10:00"}]}',
+                '2026-01-01', '2026-12-31', 'ACTIVE',
+                ST_MakePoint(16.3920, 48.2170)::geography,
+                now(), now()
+              ),
+              (
+                'b1000000-0000-0000-0000-000000000005',
+                'a1000000-0000-0000-0000-000000000003',
+                (SELECT id FROM categories WHERE name = 'Boxing'),
+                'Munich Boxing Club',
+                'Learn the sweet science with our experienced boxing coaches.',
+                'Leopoldstrasse 45', 'Munich', '80802', 'DE', 8, 90,
+                '{"rules": [{"dayOfWeek": 1, "startTime": "18:00"}, {"dayOfWeek": 3, "startTime": "18:00"}, {"dayOfWeek": 5, "startTime": "10:00"}]}',
+                '2026-01-01', '2026-12-31', 'ACTIVE',
+                ST_MakePoint(11.5820, 48.1603)::geography,
+                now(), now()
+              ),
+              (
+                'b1000000-0000-0000-0000-000000000006',
+                'a1000000-0000-0000-0000-000000000003',
+                (SELECT id FROM categories WHERE name = 'Yoga'),
+                'Munich Evening Yoga',
+                'Wind down after work with a relaxing yoga session.',
+                'Sendlinger Strasse 12', 'Munich', '80331', 'DE', 14, 60,
+                '{"rules": [{"dayOfWeek": 2, "startTime": "19:00"}, {"dayOfWeek": 4, "startTime": "19:00"}]}',
+                '2026-01-01', '2026-12-31', 'ACTIVE',
+                ST_MakePoint(11.5690, 48.1340)::geography,
+                now(), now()
+              );
+
+  - changeSet:
+      id: seed-course-images
+      author: sezer
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO course_images (id, course_id, url, display_order, created_at) VALUES
+              (gen_random_uuid(), 'b1000000-0000-0000-0000-000000000001', 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800', 1, now()),
+              (gen_random_uuid(), 'b1000000-0000-0000-0000-000000000002', 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800', 1, now()),
+              (gen_random_uuid(), 'b1000000-0000-0000-0000-000000000003', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800', 1, now()),
+              (gen_random_uuid(), 'b1000000-0000-0000-0000-000000000004', 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800', 1, now()),
+              (gen_random_uuid(), 'b1000000-0000-0000-0000-000000000005', 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=800', 1, now()),
+              (gen_random_uuid(), 'b1000000-0000-0000-0000-000000000006', 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800', 1, now());

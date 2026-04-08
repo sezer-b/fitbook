@@ -1,0 +1,480 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 001-enable-postgis
+      author: sezer
+      comment: Enable PostGIS extension, if not already enabled.
+      changes:
+        - sql:
+            sql: CREATE EXTENSION IF NOT EXISTS postgis;
+
+  - changeSet:
+      id: 002-create-users
+      author: sezer
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password_hash
+                  type: varchar(255)
+              - column:
+                  name: first_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(50)
+              - column:
+                  name: profile_picture_url
+                  type: varchar(500)
+              - column:
+                  name: auth_provider
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: auth_provider_id
+                  type: varchar(255)
+              - column:
+                  name: email_verified
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 003-create-providers
+      author: sezer
+      changes:
+        - createTable:
+            tableName: providers
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password_hash
+                  type: varchar(255)
+              - column:
+                  name: business_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: phone
+                  type: varchar(50)
+              - column:
+                  name: website
+                  type: varchar(500)
+              - column:
+                  name: profile_picture_url
+                  type: varchar(500)
+              - column:
+                  name: auth_provider
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: auth_provider_id
+                  type: varchar(255)
+              - column:
+                  name: email_verified
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subscription_status
+                  type: varchar(20)
+                  defaultValue: TRIALING
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 004-create-categories
+      author: sezer
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: icon_url
+                  type: varchar(500)
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 005-create-courses
+      author: sezer
+      changes:
+        - createTable:
+            tableName: courses
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: provider_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_courses_provider
+                    references: providers(id)
+              - column:
+                  name: category_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_courses_category
+                    references: categories(id)
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: address
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: city
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: capacity_per_slot
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: slot_duration_minutes
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: schedule_config
+                  type: jsonb
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  defaultValue: DRAFT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+        - sql:
+            sql: ALTER TABLE courses ADD COLUMN location geography(POINT, 4326) NOT NULL;
+
+  - changeSet:
+      id: 006-create-course-images
+      author: sezer
+      changes:
+        - createTable:
+            tableName: course_images
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: course_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_course_images_course
+                    references: courses(id)
+              - column:
+                  name: url
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: display_order
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 007-create-course-slots
+      author: sezer
+      changes:
+        - createTable:
+            tableName: course_slots
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: course_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_course_slots_course
+                    references: courses(id)
+              - column:
+                  name: slot_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: time
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_time
+                  type: time
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  defaultValue: SCHEDULED
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 008-create-bookings
+      author: sezer
+      changes:
+        - createTable:
+            tableName: bookings
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_bookings_user
+                    references: users(id)
+              - column:
+                  name: slot_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_bookings_slot
+                    references: course_slots(id)
+              - column:
+                  name: guest_first_name
+                  type: varchar(100)
+              - column:
+                  name: guest_last_name
+                  type: varchar(100)
+              - column:
+                  name: guest_email
+                  type: varchar(255)
+              - column:
+                  name: guest_phone
+                  type: varchar(50)
+              - column:
+                  name: status
+                  type: varchar(20)
+                  defaultValue: CONFIRMED
+                  constraints:
+                    nullable: false
+              - column:
+                  name: waitlist_position
+                  type: int
+              - column:
+                  name: booked_at
+                  type: timestamp
+                  defaultValueComputed: now()
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cancelled_at
+                  type: timestamp
+        - sql:
+            sql: >
+              ALTER TABLE bookings ADD CONSTRAINT chk_bookings_user_or_guest
+              CHECK (
+                (user_id IS NOT NULL AND guest_email IS NULL) OR
+                (user_id IS NULL AND guest_email IS NOT NULL)
+              );
+
+  - changeSet:
+      id: 009-create-indexes
+      author: sezer
+      changes:
+        - createIndex:
+            indexName: idx_course_slots_course_date
+            tableName: course_slots
+            columns:
+              - column:
+                  name: course_id
+              - column:
+                  name: slot_date
+        - createIndex:
+            indexName: idx_course_slots_date_status
+            tableName: course_slots
+            columns:
+              - column:
+                  name: slot_date
+              - column:
+                  name: status
+        - createIndex:
+            indexName: idx_bookings_slot
+            tableName: bookings
+            columns:
+              - column:
+                  name: slot_id
+        - createIndex:
+            indexName: idx_bookings_user
+            tableName: bookings
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            indexName: idx_courses_category
+            tableName: courses
+            columns:
+              - column:
+                  name: category_id
+        - createIndex:
+            indexName: idx_course_images_course
+            tableName: course_images
+            columns:
+              - column:
+                  name: course_id
+        - sql:
+            sql: CREATE INDEX idx_courses_location ON courses USING GIST (location);

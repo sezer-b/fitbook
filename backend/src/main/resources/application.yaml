@@ -2,11 +2,17 @@ spring.application.name: backend
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5438/postgres
-    username: blueprint
-    password: blueprint
+    url: jdbc:postgresql://localhost:5439/postgres
+    username: fitbook
+    password: fitbook
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
-spring.jpa:
-  hibernate:
-    ddl-auto: validate
-  open-in-view: false
+
+  devtools:
+    restart:
+      enabled: false

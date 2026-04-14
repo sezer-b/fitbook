@@ -10,7 +10,6 @@ Browse yoga, pilates, CrossFit and more from independent trainers and studios ne
 - Browse fitness courses by location, category, and availability
 - Book individual class slots and manage upcoming sessions
 - Join a waitlist when a class is full
-- Google and Apple ID login
 
 **For providers**
 - Create courses with flexible recurring schedules (e.g. every Tuesday and Thursday)

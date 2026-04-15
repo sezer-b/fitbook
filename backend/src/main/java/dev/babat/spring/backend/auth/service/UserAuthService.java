@@ -26,7 +26,7 @@ public class UserAuthService {
     public AuthResponse register(RegisterUserRequest request) {
         try {
             UserEntity user = new UserEntity();
-            user.setEmail(request.email());
+            user.setEmail(request.email().toLowerCase());
             user.setPasswordHash(passwordEncoder.encode(request.password()));
             user.setFirstName(request.firstName());
             user.setLastName(request.lastName());
@@ -46,7 +46,7 @@ public class UserAuthService {
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest loginRequest) {
-        UserEntity user = userRepository.findByEmail(loginRequest.email())
+        UserEntity user = userRepository.findByEmail(loginRequest.email().toLowerCase())
                 .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
         if (!passwordEncoder.matches(loginRequest.password(), user.getPasswordHash())) {
             throw new BadCredentialsException("Invalid credentials");

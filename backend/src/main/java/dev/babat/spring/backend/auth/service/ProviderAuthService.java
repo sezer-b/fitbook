@@ -26,7 +26,7 @@ public class ProviderAuthService {
     public AuthResponse register(RegisterProviderRequest request) {
         try {
             ProviderEntity provider = new ProviderEntity();
-            provider.setEmail(request.email());
+            provider.setEmail(request.email().toLowerCase());
             provider.setPasswordHash(passwordEncoder.encode(request.password()));
             provider.setBusinessName(request.businessName());
             provider.setDescription(request.description());
@@ -47,7 +47,7 @@ public class ProviderAuthService {
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
-        ProviderEntity provider = providerRepository.findByEmail(request.email())
+        ProviderEntity provider = providerRepository.findByEmail(request.email().toLowerCase())
                 .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
 
         if (!passwordEncoder.matches(request.password(), provider.getPasswordHash())) {

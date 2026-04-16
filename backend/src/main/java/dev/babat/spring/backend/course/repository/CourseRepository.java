@@ -1,12 +1,14 @@
 package dev.babat.spring.backend.course.repository;
 
 import dev.babat.spring.backend.course.dto.CourseCardProjection;
+import dev.babat.spring.backend.course.dto.CourseDetailProjection;
 import dev.babat.spring.backend.course.entity.CourseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CourseRepository extends JpaRepository<CourseEntity, UUID> {
@@ -31,5 +33,23 @@ public interface CourseRepository extends JpaRepository<CourseEntity, UUID> {
             @Param("lat") double lat,
             @Param("lng") double lng,
             @Param("radiusMeters") double radiusMeters
+    );
+
+    @Query(value = """
+        SELECT c.id, c.name, c.description, c.address, c.city, c.postcode, c.country,
+               c.capacity_per_slot, c.slot_duration_minutes,
+               cat.name AS category,
+               p.business_name AS provider_name,
+               ST_Distance(c.location, ST_MakePoint(:lng, :lat)::geography) / 1000 AS distance_km
+        FROM courses c
+        JOIN categories cat ON cat.id = c.category_id
+        JOIN providers p ON p.id = c.provider_id
+        WHERE c.id = :id
+        AND c.status = 'ACTIVE'
+        """, nativeQuery = true)
+    Optional<CourseDetailProjection> findCourseDetail(
+            @Param("id") UUID id,
+            @Param("lat") double lat,
+            @Param("lng") double lng
     );
 }

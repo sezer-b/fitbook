@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/002-postcode.yaml
   - include:
       file: db/changelog/seed-data.yaml
+  - include:
+      file: db/changelog/seed-data-slots.yaml

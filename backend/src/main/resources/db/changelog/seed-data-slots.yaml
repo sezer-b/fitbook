@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-data-slots
+      author: sezer
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO course_slots (id, course_id, slot_date, start_time, end_time, status, created_at)
+              SELECT
+                gen_random_uuid(),
+                c.id,
+                d::date,
+                (r->>'startTime')::time,
+                (r->>'startTime')::time + (c.slot_duration_minutes || ' minutes')::interval,
+                'SCHEDULED',
+                now()
+              FROM courses c,
+                   jsonb_array_elements(c.schedule_config->'rules') AS r,
+                   generate_series(c.start_date, c.end_date, '1 day'::interval) AS d
+              WHERE EXTRACT(ISODOW FROM d::date) = (r->>'dayOfWeek')::int
+              AND c.status = 'ACTIVE';

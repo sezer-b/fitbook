@@ -19,3 +19,7 @@ security:
   jwt:
     secret: local-dev-secret-key-that-is-long-enough-for-hs256
     expiration-ms: 86400000
+
+app:
+  upload-dir: ./uploads
+  base-url: http://localhost:8080

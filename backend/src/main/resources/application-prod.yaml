@@ -14,3 +14,7 @@ spring:
 security:
   jwt: ${JWT_SECRET}
   expiration-ms: 86400000
+
+app:
+  upload-dir: ${UPLOAD_DIR}
+  base-url: ${BASE_URL}

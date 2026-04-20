@@ -52,4 +52,8 @@ public interface CourseRepository extends JpaRepository<CourseEntity, UUID> {
             @Param("lat") double lat,
             @Param("lng") double lng
     );
+
+    List<CourseEntity> findByProviderIdOrderByCreatedAtDesc(UUID providerId);
+
+    Optional<CourseEntity> findByIdAndProviderId(UUID id, UUID providerId);
 }

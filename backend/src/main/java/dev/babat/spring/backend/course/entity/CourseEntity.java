@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
@@ -49,6 +51,7 @@ public class CourseEntity {
     @Column(name = "slot_duration_minutes", nullable = false)
     private int slotDurationMinutes;
     @Convert(converter = ScheduleConfigConverter.class)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "schedule_config", nullable = false, columnDefinition = "jsonb")
     private ScheduleConfig scheduleConfig;
     @Column(name = "start_date", nullable = false)

@@ -1,5 +1,6 @@
 package dev.babat.spring.backend.frontend;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -10,6 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class FrontendConfig implements WebMvcConfigurer {
+
+    @Value("${app.upload-dir}")
+    private String uploadDir;
 
     private static final CacheControl STATIC_CACHE = CacheControl
             .maxAge(365, TimeUnit.DAYS)
@@ -25,6 +29,12 @@ public class FrontendConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // image uploads
+        registry
+                .addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + uploadDir + "/");
+
+        // frontend
         registry
                 .addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")

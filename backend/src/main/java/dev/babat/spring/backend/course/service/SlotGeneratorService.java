@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -66,5 +67,10 @@ public class SlotGeneratorService {
 
         courseSlotRepository.saveAll(slots);
         log.info("Generated {} slots for course {}", slots.size(), course.getId());
+    }
+
+    @Transactional
+    public void deleteFutureUnbookedSlots(UUID courseId) {
+        courseSlotRepository.deleteUnbookedFutureSlots(courseId, LocalDate.now());
     }
 }

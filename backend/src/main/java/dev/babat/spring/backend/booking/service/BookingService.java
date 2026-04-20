@@ -1,7 +1,9 @@
 package dev.babat.spring.backend.booking.service;
 
+import dev.babat.spring.backend.booking.dto.BookingHistoryDTO;
 import dev.babat.spring.backend.booking.dto.BookingResponse;
 import dev.babat.spring.backend.booking.dto.CreateBookingRequest;
+import dev.babat.spring.backend.booking.dto.SlotBookingDTO;
 import dev.babat.spring.backend.booking.entity.BookingEntity;
 import dev.babat.spring.backend.booking.entity.BookingStatus;
 import dev.babat.spring.backend.booking.repository.BookingRepository;
@@ -86,6 +88,52 @@ public class BookingService {
         if (wasConfirmed) {
             promoteWaitlist(booking.getSlot().getId());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<BookingHistoryDTO> getMyBookings(UUID userId) {
+        return bookingRepository.findByUserIdOrderByBookedAtDesc(userId)
+                .stream()
+                .map(b -> new BookingHistoryDTO(
+                        b.getId(),
+                        b.getSlot().getId(),
+                        b.getSlot().getCourse().getName(),
+                        b.getSlot().getCourse().getProvider().getBusinessName(),
+                        b.getSlot().getSlotDate(),
+                        b.getSlot().getStartTime(),
+                        b.getSlot().getEndTime(),
+                        b.getStatus().name(),
+                        b.getWaitlistPosition(),
+                        b.getBookedAt()
+                ))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<SlotBookingDTO> getBookingsForSlot(UUID slotId, UUID providerId) {
+        CourseSlotEntity slot = courseSlotRepository.findById(slotId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Slot not found"));
+
+        if (!slot.getCourse().getProvider().getId().equals(providerId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your slot");
+        }
+
+        return bookingRepository.findBookingsForSlot(slotId)
+                .stream()
+                .map(b -> {
+                    boolean isGuest = b.getGuestEmail() != null;
+                    return new SlotBookingDTO(
+                            b.getId(),
+                            isGuest ? b.getGuestFirstName() : b.getUserFirstName(),
+                            isGuest ? b.getGuestLastName() : b.getUserLastName(),
+                            isGuest ? b.getGuestEmail() : b.getUserEmail(),
+                            b.getStatus(),
+                            b.getWaitlistPosition(),
+                            isGuest,
+                            b.getBookedAt()
+                    );
+                })
+                .toList();
     }
 
     private void promoteWaitlist(UUID slotId) {

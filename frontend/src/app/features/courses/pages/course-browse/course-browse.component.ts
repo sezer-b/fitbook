@@ -4,6 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-course-browse',
   imports: [],
   templateUrl: './course-browse.component.html',
-  styleUrl: './course-browse.component.css',
+  styleUrl: './course-browse.component.scss',
 })
 export class CourseBrowseComponent {}

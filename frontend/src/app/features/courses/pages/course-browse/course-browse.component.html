@@ -1,1 +1,66 @@
-<p>course-browse works!</p>
+<div class="browse-container">
+
+    @if (loading()) {
+        <div class="centered">
+            <mat-spinner/>
+        </div>
+    }
+
+    @if (locationDenied()) {
+        <div class="centered">
+            <mat-icon>location_off</mat-icon>
+            <p>Please enable location access to discover courses near you.</p>
+            <button mat-flat-button (click)="getUserLocation()">Try Again</button>
+        </div>
+    }
+
+    @if (error()) {
+        <div class="centered">
+            <p>{{ error() }}</p>
+        </div>
+    }
+
+    @if (!loading() && !locationDenied() && courses().length === 0) {
+        <div class="centered">
+            <mat-icon>search_off</mat-icon>
+            <p>No courses found near you. Try increasing the search radius.</p>
+        </div>
+    }
+
+    @if (courses().length > 0) {
+        <div class="courses-grid">
+            @for (course of courses(); track course.id) {
+                <mat-card class="course-card" [routerLink]="['/courses', course.id]">
+                    @if (course.imageUrl) {
+                        <img mat-card-image [src]="course.imageUrl" [alt]="course.name">
+                    } @else {
+                        <div class="no-image">
+                            <mat-icon>fitness_center</mat-icon>
+                            <span>{{ course.name }}</span>
+                        </div>
+                    }
+                    <mat-card-content>
+                        <p class="category">{{ course.category }}</p>
+                        <h3>{{ course.name }}</h3>
+                        <p class="provider">{{ course.providerName }}</p>
+                        <div class="meta">
+              <span>
+                <mat-icon>location_on</mat-icon>
+                  {{ course.city }} · {{ course.distanceKm | number:'1.1-1' }} km
+              </span>
+                            <span>
+                <mat-icon>schedule</mat-icon>
+                                {{ course.slotDurationMinutes }} min
+              </span>
+                            <span>
+                <mat-icon>group</mat-icon>
+                                {{ course.capacityPerSlot }} spots
+              </span>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            }
+        </div>
+    }
+
+</div>

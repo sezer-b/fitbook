@@ -1,1 +1,150 @@
-<p>course-detail works!</p>
+<div class="detail-container">
+
+    @if (loading()) {
+        <div class="centered">
+            <mat-spinner/>
+        </div>
+    }
+
+    @if (error()) {
+        <div class="centered">
+            <p>{{ error() }}</p>
+            <button mat-flat-button routerLink="/">Back to courses</button>
+        </div>
+    }
+
+    @if (course(); as course) {
+        <div class="detail-layout">
+
+            <!-- Images -->
+            <div class="images">
+                @if (course.imageUrls.length > 0) {
+                    <img [src]="course.imageUrls[0]" [alt]="course.name" class="main-image">
+                } @else {
+                    <div class="no-image">
+                        <mat-icon>fitness_center</mat-icon>
+                        <span>{{ course.name }}</span>
+                    </div>
+                }
+            </div>
+
+            <!-- Course info -->
+            <mat-card class="info-card">
+                <mat-card-content>
+                    <p class="category">{{ course.category }}</p>
+                    <h1>{{ course.name }}</h1>
+                    <p class="provider">{{ course.providerName }}</p>
+
+                    @if (course.description) {
+                        <p class="description">{{ course.description }}</p>
+                    }
+
+                    <div class="meta">
+                        <span><mat-icon>location_on</mat-icon>
+                            {{ course.address }}, {{ course.city }} · {{ course.distanceKm | number:'1.1-1' }}
+                            km away</span>
+                        <span><mat-icon>schedule</mat-icon>
+                            {{ course.slotDurationMinutes }} min per session</span>
+                        <span><mat-icon>group</mat-icon>
+                            {{ course.capacityPerSlot }} spots per slot</span>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <!-- Booking section -->
+            <mat-card class="booking-card">
+                <mat-card-content>
+                    <h2>Book a slot</h2>
+
+                    <mat-form-field appearance="outline" class="date-picker">
+                        <mat-label>Select a date</mat-label>
+                        <input matInput
+                               [matDatepicker]="picker"
+                               [matDatepickerFilter]="dateFilter"
+                               [min]="today"
+                               (dateChange)="onDateSelected($event.value)"
+                               readonly>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"/>
+                        <mat-datepicker #picker/>
+                    </mat-form-field>
+
+                    @if (slotsForSelectedDate().length > 0) {
+                        <div class="slots">
+                            <p class="slots-label">Available times:</p>
+                            <div class="slot-grid">
+                                @for (slot of slotsForSelectedDate(); track slot.id) {
+                                    <button mat-stroked-button
+                                            [class.selected]="selectedSlot()?.id === slot.id"
+                                            [disabled]="slot.availableSpots === 0"
+                                            (click)="onSlotSelected(slot)">
+                                        {{ slot.startTime }} – {{ slot.endTime }}
+                                        @if (slot.availableSpots === 0) {
+                                            <span class="full-badge">Full</span>
+                                        } @else {
+                                            <span class="spots">{{ slot.availableSpots }} left</span>
+                                        }
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (selectedSlot()) {
+                        <div class="booking-form">
+                            @if (!isLoggedIn) {
+                                <p class="guest-note">You are booking as guest, please enter your details below:</p>
+                                <form [formGroup]="guestForm">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>First name</mat-label>
+                                        <input matInput formControlName="guestFirstName">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Last name</mat-label>
+                                        <input matInput formControlName="guestLastName">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Email</mat-label>
+                                        <input matInput formControlName="guestEmail" type="email">
+                                    </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Phone (optional)</mat-label>
+                                        <input matInput formControlName="guestPhone">
+                                    </mat-form-field>
+                                </form>
+                            } @else {
+                                <p class="auth-note">
+                                    <mat-icon>check_circle</mat-icon>
+                                    Booking as registered user
+                                </p>
+                            }
+
+                            @if (bookingSuccess()) {
+                                <p class="success">
+                                    <mat-icon>check_circle</mat-icon>
+                                    Booking confirmed!
+                                </p>
+                            }
+
+                            @if (bookingError()) {
+                                <p class="error">{{ bookingError() }}</p>
+                            }
+
+                            <button mat-flat-button
+                                    color="primary"
+                                    [disabled]="bookingInProgress()"
+                                    (click)="book()">
+                                @if (bookingInProgress()) {
+                                    <mat-spinner diameter="20"/>
+                                } @else {
+                                    Confirm booking
+                                }
+                            </button>
+                        </div>
+                    }
+                </mat-card-content>
+            </mat-card>
+
+        </div>
+    }
+
+</div>

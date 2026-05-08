@@ -1,0 +1,170 @@
+.detail-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1rem;
+}
+
+.detail-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.main-image {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.no-image {
+  width: 100%;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border-radius: 8px;
+  gap: 1rem;
+  color: #999;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.info-card, .booking-card {
+  mat-card-content {
+    padding: 1.5rem;
+  }
+}
+
+.category {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #666;
+  margin: 0 0 0.5rem;
+}
+
+h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.75rem;
+}
+
+.provider {
+  color: #666;
+  margin: 0 0 1rem;
+}
+
+.description {
+  margin: 1rem 0;
+  line-height: 1.6;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.date-picker {
+  width: 100%;
+}
+
+.slots-label {
+  font-weight: 500;
+  margin: 1rem 0 0.5rem;
+}
+
+.slot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 1rem;
+
+    &.selected {
+      background: #1976d2;
+      color: white;
+    }
+
+    .full-badge {
+      font-size: 0.7rem;
+      color: #999;
+    }
+
+    .spots {
+      font-size: 0.7rem;
+      color: #4caf50;
+    }
+  }
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .guest-note {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+
+  .auth-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4caf50;
+    margin: 0.5rem 0;
+  }
+}
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4caf50;
+}
+
+.error {
+  color: #f44336;
+}

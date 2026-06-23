@@ -1,0 +1,45 @@
+<mat-toolbar class="header">
+    <a routerLink="/" class="logo">
+        <mat-icon>fitness_center</mat-icon>
+        <span>FitBook</span>
+    </a>
+
+    <span class="spacer"></span>
+
+    @if (!isLoggedIn) {
+        <button mat-button [matMenuTriggerFor]="loginMenu">
+            <mat-icon>login</mat-icon>
+            Log in
+        </button>
+        <mat-menu #loginMenu="matMenu">
+            <button mat-menu-item routerLink="/auth/login">As user</button>
+            <button mat-menu-item routerLink="/auth/login/provider">As provider</button>
+        </mat-menu>
+
+        <button mat-flat-button color="primary" routerLink="/auth/register">
+            Sign up
+        </button>
+    }
+
+    @if (isLoggedIn && role === 'USER') {
+        <button mat-button routerLink="/my-bookings">
+            <mat-icon>event</mat-icon>
+            My bookings
+        </button>
+        <button mat-button (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Log out
+        </button>
+    }
+
+    @if (isLoggedIn && role === 'PROVIDER') {
+        <button mat-button routerLink="/provider">
+            <mat-icon>dashboard</mat-icon>
+            Dashboard
+        </button>
+        <button mat-button (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Log out
+        </button>
+    }
+</mat-toolbar>

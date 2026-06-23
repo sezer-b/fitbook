@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {CourseService} from '../../../../core/services/course.service';
 import {BookingService} from '../../../../core/services/booking.service';
 import {AuthService} from '../../../../core/services/auth.service';
@@ -35,6 +35,7 @@ import {DecimalPipe} from '@angular/common';
 })
 export class CourseDetailComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
+    private readonly router = inject(Router);
     private readonly courseService = inject(CourseService);
     private readonly bookingService = inject(BookingService);
     private readonly authService = inject(AuthService);
@@ -48,7 +49,6 @@ export class CourseDetailComponent implements OnInit {
     selectedDate = signal<Date | null>(null);
     selectedSlot = signal<SlotDto | null>(null);
     slotsForSelectedDate = signal<SlotDto[]>([]);
-    bookingSuccess = signal(false);
     bookingError = signal<string | null>(null);
     bookingInProgress = signal(false);
 
@@ -128,7 +128,6 @@ export class CourseDetailComponent implements OnInit {
 
     onSlotSelected(slot: SlotDto) {
         this.selectedSlot.set(slot);
-        this.bookingSuccess.set(false);
         this.bookingError.set(null);
     }
 
@@ -150,11 +149,18 @@ export class CourseDetailComponent implements OnInit {
 
         this.bookingService.book(request).subscribe({
             next: response => {
-                this.bookingSuccess.set(true);
                 this.bookingInProgress.set(false);
-                this.selectedSlot.set(null);
-                this.guestForm.reset();
-                this.loadCourse();
+                this.router.navigate(['/booking/confirmation'], {
+                    state: {
+                        status: response.status,
+                        waitlistPosition: response.waitlistPosition,
+                        courseName: this.course()!.name,
+                        providerName: this.course()!.providerName,
+                        slotDate: this.toDateString(this.selectedDate()!),
+                        startTime: this.selectedSlot()!.startTime,
+                        endTime: this.selectedSlot()!.endTime
+                    }
+                });
             },
             error: () => {
                 this.bookingError.set('Booking failed. Please try again.');

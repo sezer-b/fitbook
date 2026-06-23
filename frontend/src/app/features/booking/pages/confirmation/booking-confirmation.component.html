@@ -1,0 +1,58 @@
+<div class="confirmation-container">
+    <mat-card class="confirmation-card">
+        <mat-card-content>
+
+            @if (isWaitlisted) {
+                <div class="icon waitlisted">
+                    <mat-icon>schedule</mat-icon>
+                </div>
+                <h1>You're on the waitlist</h1>
+                <p class="position">Position #{{ waitlistPosition() }}</p>
+                <p class="info">You'll be automatically confirmed if a spot opens up.</p>
+            } @else {
+                <div class="icon confirmed">
+                    <mat-icon>check_circle</mat-icon>
+                </div>
+                <h1>Booking confirmed!</h1>
+            }
+
+            <div class="details">
+                <div class="detail-row">
+                    <mat-icon>fitness_center</mat-icon>
+                    <div>
+                        <span class="label">Course</span>
+                        <span class="value">{{ courseName() }}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <mat-icon>business</mat-icon>
+                    <div>
+                        <span class="label">Provider</span>
+                        <span class="value">{{ providerName() }}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <mat-icon>calendar_today</mat-icon>
+                    <div>
+                        <span class="label">Date</span>
+                        <span class="value">{{ slotDate() }}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <mat-icon>schedule</mat-icon>
+                    <div>
+                        <span class="label">Time</span>
+                        <span class="value">{{ startTime() }} – {{ endTime() }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button mat-flat-button color="primary" routerLink="/">
+                    Browse more courses
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -118,13 +118,6 @@
                                 </p>
                             }
 
-                            @if (bookingSuccess()) {
-                                <p class="success">
-                                    <mat-icon>check_circle</mat-icon>
-                                    Booking confirmed!
-                                </p>
-                            }
-
                             @if (bookingError()) {
                                 <p class="error">{{ bookingError() }}</p>
                             }

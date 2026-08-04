@@ -1,1 +1,106 @@
-<p>provider-dashboard works!</p>
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>My Courses</h1>
+        <button mat-flat-button color="primary" (click)="openCreateDialog()">
+            <mat-icon>add</mat-icon>
+            New course
+        </button>
+    </div>
+
+    @if (loading()) {
+        <div class="centered"><mat-spinner /></div>
+    } @else {
+        <mat-tab-group>
+
+            <mat-tab label="Active ({{ activeCourses.length }})">
+                <div class="courses-list">
+                    @if (activeCourses.length === 0) {
+                        <div class="empty">
+                            <mat-icon>fitness_center</mat-icon>
+                            <p>No active courses yet. Publish a draft to get started.</p>
+                        </div>
+                    }
+                    @for (course of activeCourses; track course.id) {
+                        <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
+                    }
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Drafts ({{ draftCourses.length }})">
+                <div class="courses-list">
+                    @if (draftCourses.length === 0) {
+                        <div class="empty">
+                            <mat-icon>edit_note</mat-icon>
+                            <p>No drafts. Create a new course to get started.</p>
+                        </div>
+                    }
+                    @for (course of draftCourses; track course.id) {
+                        <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
+                    }
+                </div>
+            </mat-tab>
+
+            <mat-tab label="Cancelled ({{ cancelledCourses.length }})">
+                <div class="courses-list">
+                    @if (cancelledCourses.length === 0) {
+                        <div class="empty">
+                            <mat-icon>cancel</mat-icon>
+                            <p>No cancelled courses.</p>
+                        </div>
+                    }
+                    @for (course of cancelledCourses; track course.id) {
+                        <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
+                    }
+                </div>
+            </mat-tab>
+
+        </mat-tab-group>
+    }
+</div>
+
+<ng-template #courseCard let-course="course">
+    <mat-card class="course-card">
+        <mat-card-content>
+            <div class="course-header">
+                <div>
+                    <h3>{{ course.name }}</h3>
+                    <p class="meta">{{ course.city }} · {{ course.slotDurationMinutes }} min · {{ course.capacityPerSlot }} spots</p>
+                </div>
+                <span class="status" [class]="course.status.toLowerCase()">{{ course.status }}</span>
+            </div>
+
+            @if (course.imageUrls.length > 0) {
+                <div class="images">
+                    @for (url of course.imageUrls; track url) {
+                        <img [src]="url" [alt]="course.name">
+                    }
+                </div>
+            }
+
+            <div class="actions">
+                @if (course.status === 'DRAFT') {
+                    <button mat-flat-button color="primary"
+                            [disabled]="actionInProgress() === course.id"
+                            (click)="publish(course)">
+                        @if (actionInProgress() === course.id) {
+                            <mat-spinner diameter="16" />
+                        } @else {
+                            Publish
+                        }
+                    </button>
+                }
+                @if (course.status === 'ACTIVE') {
+                    <button mat-stroked-button color="warn"
+                            [disabled]="actionInProgress() === course.id"
+                            (click)="cancel(course)">
+                        @if (actionInProgress() === course.id) {
+                            <mat-spinner diameter="16" />
+                        } @else {
+                            Cancel course
+                        }
+                    </button>
+                }
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

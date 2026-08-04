@@ -1,0 +1,41 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  min-width: 500px;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+h3 {
+  margin: 0.5rem 0 0;
+}
+
+.schedule-hint {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
+.rule-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.error {
+  color: #f44336;
+  font-size: 0.9rem;
+}

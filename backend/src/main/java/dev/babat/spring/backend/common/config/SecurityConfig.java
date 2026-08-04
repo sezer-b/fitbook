@@ -29,15 +29,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // frontend
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/", "/index.html", "/*.js", "/*.css", "/*.ico", "/assets/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/booking/**").permitAll()
                         .requestMatchers("/courses/**").permitAll()
+                        .requestMatchers("/my-bookings").permitAll()
+                        .requestMatchers("/provider/**").permitAll()
+                        // backend
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/courses/**").permitAll()
                         .requestMatchers("/api/bookings/**").permitAll()
-                        .requestMatchers("/my-bookings").permitAll()
+                        .requestMatchers("/api/categories/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

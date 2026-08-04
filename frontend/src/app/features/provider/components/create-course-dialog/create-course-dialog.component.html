@@ -1,0 +1,131 @@
+<h2 mat-dialog-title>Create new course</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="form">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Course name</mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Description (optional)</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="categoryId">
+                @for (cat of categories(); track cat.id) {
+                    <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>Address</mat-label>
+                <input matInput formControlName="address">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city">
+            </mat-form-field>
+        </div>
+
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>Postcode</mat-label>
+                <input matInput formControlName="postcode">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Country code (e.g. AT)</mat-label>
+                <input matInput formControlName="country" maxlength="2">
+            </mat-form-field>
+        </div>
+
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>Capacity per slot</mat-label>
+                <input matInput type="number" formControlName="capacityPerSlot">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Duration (minutes)</mat-label>
+                <input matInput type="number" formControlName="slotDurationMinutes">
+            </mat-form-field>
+        </div>
+
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>Start date</mat-label>
+                <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+                <mat-datepicker-toggle matIconSuffix [for]="startPicker" />
+                <mat-datepicker #startPicker />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>End date</mat-label>
+                <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+                <mat-datepicker-toggle matIconSuffix [for]="endPicker" />
+                <mat-datepicker #endPicker />
+            </mat-form-field>
+        </div>
+
+        <div class="row">
+            <mat-form-field appearance="outline">
+                <mat-label>Latitude</mat-label>
+                <input matInput type="number" formControlName="lat">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Longitude</mat-label>
+                <input matInput type="number" formControlName="lng">
+            </mat-form-field>
+        </div>
+
+        <h3>Schedule</h3>
+        <p class="schedule-hint">Add one rule per time slot per day.</p>
+
+        <div formArrayName="rules">
+            @for (rule of rules.controls; track $index) {
+                <div [formGroupName]="$index" class="rule-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Day</mat-label>
+                        <mat-select formControlName="dayOfWeek">
+                            @for (day of days; track day.value) {
+                                <mat-option [value]="day.value">{{ day.label }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Start time</mat-label>
+                        <input matInput type="time" formControlName="startTime">
+                    </mat-form-field>
+                    <button mat-icon-button color="warn"
+                            type="button"
+                            [disabled]="rules.length === 1"
+                            (click)="removeRule($index)">
+                        <mat-icon>remove_circle</mat-icon>
+                    </button>
+                </div>
+            }
+        </div>
+
+        <button mat-stroked-button type="button" (click)="addRule()">
+            <mat-icon>add</mat-icon>
+            Add time slot
+        </button>
+
+        @if (error()) {
+            <p class="error">{{ error() }}</p>
+        }
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary"
+            [disabled]="loading()"
+            (click)="submit()">
+        @if (loading()) { <mat-spinner diameter="20" /> } @else { Create course }
+    </button>
+</mat-dialog-actions>

@@ -1,0 +1,94 @@
+<div class="bookings-container">
+    <h1>My Bookings</h1>
+
+    @if (loading()) {
+        <div class="centered">
+            <mat-spinner/>
+        </div>
+    } @else {
+        <mat-tab-group>
+
+            <mat-tab label="Upcoming ({{ upcoming.length }})">
+                @if (upcoming.length === 0) {
+                    <div class="empty">
+                        <mat-icon>event_busy</mat-icon>
+                        <p>No upcoming bookings.</p>
+                        <button mat-flat-button color="primary" routerLink="/">Browse courses</button>
+                    </div>
+                } @else {
+                    <div class="bookings-list">
+                        @for (booking of upcoming; track booking.id) {
+                            <mat-card class="booking-card">
+                                <mat-card-content>
+                                    <div class="booking-header">
+                                        <div>
+                                            <h3>{{ booking.courseName }}</h3>
+                                            <p class="provider">{{ booking.providerName }}</p>
+                                        </div>
+                                        <span class="status" [class]="booking.status.toLowerCase()">
+                      {{ booking.status }}
+                                            @if (booking.waitlistPosition) {
+                                                #{{ booking.waitlistPosition }}
+                                            }
+                    </span>
+                                    </div>
+                                    <div class="booking-meta">
+                                        <span><mat-icon>calendar_today</mat-icon>
+                                            {{ booking.slotDate }}</span>
+                                        <span><mat-icon>schedule</mat-icon>
+                                            {{ booking.startTime }} – {{ booking.endTime }}</span>
+                                    </div>
+                                    @if (booking.status !== 'CANCELLED') {
+                                        <button mat-stroked-button color="warn"
+                                                [disabled]="cancellingId() === booking.id"
+                                                (click)="cancel(booking.id)">
+                                            @if (cancellingId() === booking.id) {
+                                                <mat-spinner diameter="16"/>
+                                            } @else {
+                                                Cancel booking
+                                            }
+                                        </button>
+                                    }
+                                </mat-card-content>
+                            </mat-card>
+                        }
+                    </div>
+                }
+            </mat-tab>
+
+            <mat-tab label="Past ({{ past.length }})">
+                @if (past.length === 0) {
+                    <div class="empty">
+                        <mat-icon>history</mat-icon>
+                        <p>No past bookings yet.</p>
+                    </div>
+                } @else {
+                    <div class="bookings-list">
+                        @for (booking of past; track booking.id) {
+                            <mat-card class="booking-card past">
+                                <mat-card-content>
+                                    <div class="booking-header">
+                                        <div>
+                                            <h3>{{ booking.courseName }}</h3>
+                                            <p class="provider">{{ booking.providerName }}</p>
+                                        </div>
+                                        <span class="status" [class]="booking.status.toLowerCase()">
+                      {{ booking.status }}
+                    </span>
+                                    </div>
+                                    <div class="booking-meta">
+                                        <span><mat-icon>calendar_today</mat-icon>
+                                            {{ booking.slotDate }}</span>
+                                        <span><mat-icon>schedule</mat-icon>
+                                            {{ booking.startTime }} – {{ booking.endTime }}</span>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                        }
+                    </div>
+                }
+            </mat-tab>
+
+        </mat-tab-group>
+    }
+</div>

@@ -13,3 +13,16 @@ export interface BookingResponse {
     waitlistPosition?: number;
     bookedAt: string;
 }
+
+export interface BookingHistory {
+    id: string;
+    slotId: string;
+    courseName: string;
+    providerName: string;
+    slotDate: string;
+    startTime: string;
+    endTime: string;
+    status: string;
+    waitlistPosition?: number;
+    bookedAt: string;
+}

@@ -39,6 +39,13 @@ export const routes: Routes = [
                 .then(m => m.BookingConfirmationComponent)
     },
     {
+        path: 'my-bookings',
+        loadComponent: () =>
+            import('./features/booking/pages/my-bookings/my-bookings.component')
+                .then(m => m.MyBookingsComponent),
+        canActivate: [() => import('./core/guards/user.guard').then(m => m.userGuard)]
+    },
+    {
         path: '**',
         redirectTo: ''
     }

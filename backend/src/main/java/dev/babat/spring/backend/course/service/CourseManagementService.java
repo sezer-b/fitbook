@@ -82,7 +82,7 @@ public class CourseManagementService {
 
         if (scheduleChanged && course.getStatus() == CourseStatus.ACTIVE) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Cannot change schedule of an active course directly — cancel and recreate instead");
+                    "Cannot change schedule of an active course directly - cancel and recreate instead");
         }
 
         if (request.name() != null) course.setName(request.name());

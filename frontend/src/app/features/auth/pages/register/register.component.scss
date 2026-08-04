@@ -1,0 +1,54 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.auth-card {
+  max-width: 420px;
+  width: 100%;
+}
+
+h1 {
+  margin: 0 0 1.5rem;
+  text-align: center;
+}
+
+.role-toggle {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  display: flex;
+
+  mat-button-toggle {
+    flex: 1;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  button {
+    margin-top: 0.5rem;
+    height: 44px;
+  }
+}
+
+.error {
+  color: #f44336;
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
+}
+
+.switch {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #666;
+
+  a {
+    color: #1976d2;
+    font-weight: 500;
+  }
+}

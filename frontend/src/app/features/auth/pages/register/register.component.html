@@ -1,1 +1,80 @@
-<p>register works!</p>
+<div class="auth-container">
+    <mat-card class="auth-card">
+        <mat-card-content>
+            <h1>Sign up</h1>
+
+            <mat-button-toggle-group [value]="registerAs()" (change)="registerAs.set($event.value)" class="role-toggle">
+                <mat-button-toggle value="USER">I'm a user</mat-button-toggle>
+                <mat-button-toggle value="PROVIDER">I'm a provider</mat-button-toggle>
+            </mat-button-toggle-group>
+
+            @if (registerAs() === 'USER') {
+                <form [formGroup]="userForm" (ngSubmit)="submit()">
+                    <mat-form-field appearance="outline">
+                        <mat-label>First name</mat-label>
+                        <input matInput formControlName="firstName">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Last name</mat-label>
+                        <input matInput formControlName="lastName">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email" type="email">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+                        <input matInput formControlName="password" type="password">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Phone (optional)</mat-label>
+                        <input matInput formControlName="phone">
+                    </mat-form-field>
+
+                    @if (error()) { <p class="error">{{ error() }}</p> }
+
+                    <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+                        @if (loading()) { <mat-spinner diameter="20" /> } @else { Sign up }
+                    </button>
+                </form>
+            } @else {
+                <form [formGroup]="providerForm" (ngSubmit)="submit()">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Business name</mat-label>
+                        <input matInput formControlName="businessName">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email" type="email">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Password</mat-label>
+                        <input matInput formControlName="password" type="password">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Description (optional)</mat-label>
+                        <textarea matInput formControlName="description"></textarea>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Phone (optional)</mat-label>
+                        <input matInput formControlName="phone">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Website (optional)</mat-label>
+                        <input matInput formControlName="website">
+                    </mat-form-field>
+
+                    @if (error()) { <p class="error">{{ error() }}</p> }
+
+                    <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+                        @if (loading()) { <mat-spinner diameter="20" /> } @else { Sign up }
+                    </button>
+                </form>
+            }
+
+            <p class="switch">
+                Already have an account? <a routerLink="/auth/login">Log in</a>
+            </p>
+        </mat-card-content>
+    </mat-card>
+</div>

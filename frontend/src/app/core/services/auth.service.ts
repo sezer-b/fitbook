@@ -2,7 +2,7 @@ import {Injectable, inject, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {tap} from 'rxjs/operators';
-import {AuthResponse, LoginRequest, RegisterUserRequest} from '../models/auth.model';
+import {AuthResponse, LoginRequest, RegisterProviderRequest, RegisterUserRequest} from '../models/auth.model';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -26,6 +26,12 @@ export class AuthService {
 
     registerUser(request: RegisterUserRequest) {
         return this.http.post<AuthResponse>('/api/auth/users/register', request).pipe(
+            tap(response => this.storeAuth(response))
+        );
+    }
+
+    registerProvider(request: RegisterProviderRequest) {
+        return this.http.post<AuthResponse>('/api/auth/providers/register', request).pipe(
             tap(response => this.storeAuth(response))
         );
     }

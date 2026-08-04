@@ -16,3 +16,12 @@ export interface RegisterUserRequest {
     lastName: string;
     phone?: string;
 }
+
+export interface RegisterProviderRequest {
+    email: string;
+    password: string;
+    businessName: string;
+    description?: string;
+    phone?: string;
+    website?: string;
+}

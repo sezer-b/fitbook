@@ -1,1 +1,36 @@
-<p>login works!</p>
+<div class="auth-container">
+    <mat-card class="auth-card">
+        <mat-card-content>
+            <h1>Log in</h1>
+
+            <mat-button-toggle-group [value]="loginAs()" (change)="loginAs.set($event.value)" class="role-toggle">
+                <mat-button-toggle value="USER">I'm a user</mat-button-toggle>
+                <mat-button-toggle value="PROVIDER">I'm a provider</mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <form [formGroup]="form" (ngSubmit)="submit()">
+                <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" type="email">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input matInput formControlName="password" type="password">
+                </mat-form-field>
+
+                @if (error()) {
+                    <p class="error">{{ error() }}</p>
+                }
+
+                <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+                    @if (loading()) { <mat-spinner diameter="20" /> } @else { Log in }
+                </button>
+            </form>
+
+            <p class="switch">
+                Don't have an account? <a routerLink="/auth/register">Sign up</a>
+            </p>
+        </mat-card-content>
+    </mat-card>
+</div>

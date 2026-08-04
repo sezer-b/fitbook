@@ -12,8 +12,8 @@
             Log in
         </button>
         <mat-menu #loginMenu="matMenu">
-            <button mat-menu-item routerLink="/auth/login">As user</button>
-            <button mat-menu-item routerLink="/auth/login/provider">As provider</button>
+            <button mat-menu-item routerLink="/auth/login" [queryParams]="{role: 'user'}">As user</button>
+            <button mat-menu-item routerLink="/auth/login" [queryParams]="{role: 'provider'}">As provider</button>
         </mat-menu>
 
         <button mat-flat-button color="primary" routerLink="/auth/register">

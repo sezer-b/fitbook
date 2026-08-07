@@ -1,60 +1,163 @@
 <div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>My Courses</h1>
-        <button mat-flat-button color="primary" (click)="openCreateDialog()">
-            <mat-icon>add</mat-icon>
-            New course
-        </button>
-    </div>
 
-    @if (loading()) {
-        <div class="centered"><mat-spinner /></div>
-    } @else {
-        <mat-tab-group>
+    @if (!viewingCourse()) {
+        <div class="dashboard-header">
+            <h1>My Courses</h1>
+            <button mat-flat-button color="primary" (click)="openCreateDialog()">
+                <mat-icon>add</mat-icon>
+                New course
+            </button>
+        </div>
 
-            <mat-tab label="Active ({{ activeCourses.length }})">
-                <div class="courses-list">
-                    @if (activeCourses.length === 0) {
-                        <div class="empty">
-                            <mat-icon>fitness_center</mat-icon>
-                            <p>No active courses yet. Publish a draft to get started.</p>
-                        </div>
-                    }
-                    @for (course of activeCourses; track course.id) {
-                        <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
+        @if (loading()) {
+            <div class="centered">
+                <mat-spinner/>
+            </div>
+        } @else {
+            <mat-tab-group>
+                <mat-tab label="Active ({{ activeCourses.length }})">
+                    <div class="courses-list">
+                        @if (activeCourses.length === 0) {
+                            <div class="empty">
+                                <mat-icon>fitness_center</mat-icon>
+                                <p>No active courses yet.</p>
+                            </div>
+                        }
+                        @for (course of activeCourses; track course.id) {
+                            <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
+                        }
+                    </div>
+                </mat-tab>
+
+                <mat-tab label="Drafts ({{ draftCourses.length }})">
+                    <div class="courses-list">
+                        @if (draftCourses.length === 0) {
+                            <div class="empty">
+                                <mat-icon>edit_note</mat-icon>
+                                <p>No drafts. Create a new course to get started.</p>
+                            </div>
+                        }
+                        @for (course of draftCourses; track course.id) {
+                            <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
+                        }
+                    </div>
+                </mat-tab>
+
+                <mat-tab label="Cancelled ({{ cancelledCourses.length }})">
+                    <div class="courses-list">
+                        @if (cancelledCourses.length === 0) {
+                            <div class="empty">
+                                <mat-icon>cancel</mat-icon>
+                                <p>No cancelled courses.</p>
+                            </div>
+                        }
+                        @for (course of cancelledCourses; track course.id) {
+                            <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
+                        }
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        }
+    }
+
+    @if (viewingCourse() && !selectedSlot()) {
+        <div class="slots-view">
+            <div class="view-header">
+                <button mat-icon-button (click)="backToCourses()">
+                    <mat-icon>arrow_back</mat-icon>
+                </button>
+                <h2>{{ viewingCourse()!.name }} — Slots</h2>
+            </div>
+
+            @if (slotsLoading()) {
+                <div class="centered">
+                    <mat-spinner/>
+                </div>
+            } @else if (slots().length === 0) {
+                <div class="empty">
+                    <mat-icon>event_busy</mat-icon>
+                    <p>No upcoming slots found.</p>
+                </div>
+            } @else {
+                <div class="slots-list">
+                    @for (slot of slots(); track slot.id) {
+                        <mat-card class="slot-card" (click)="selectSlot(slot)">
+                            <mat-card-content>
+                                <div class="slot-row">
+                  <span class="slot-date">
+                    <mat-icon>calendar_today</mat-icon>
+                      {{ slot.slotDate }}
+                  </span>
+                                    <span class="slot-time">
+                    <mat-icon>schedule</mat-icon>
+                                        {{ slot.startTime }} – {{ slot.endTime }}
+                  </span>
+                                    <span class="slot-status" [class]="slot.status.toLowerCase()">
+                    {{ slot.status }}
+                  </span>
+                                    <mat-icon class="chevron">chevron_right</mat-icon>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
                     }
                 </div>
-            </mat-tab>
+            }
+        </div>
+    }
 
-            <mat-tab label="Drafts ({{ draftCourses.length }})">
-                <div class="courses-list">
-                    @if (draftCourses.length === 0) {
-                        <div class="empty">
-                            <mat-icon>edit_note</mat-icon>
-                            <p>No drafts. Create a new course to get started.</p>
-                        </div>
-                    }
-                    @for (course of draftCourses; track course.id) {
-                        <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
-                    }
+    @if (selectedSlot()) {
+        <div class="bookings-view">
+            <div class="view-header">
+                <button mat-icon-button (click)="backToSlots()">
+                    <mat-icon>arrow_back</mat-icon>
+                </button>
+                <h2>
+                    {{ selectedSlot()!.slotDate }} · {{ selectedSlot()!.startTime }} – {{ selectedSlot()!.endTime }}
+                </h2>
+            </div>
+
+            @if (slotBookingsLoading()) {
+                <div class="centered">
+                    <mat-spinner/>
                 </div>
-            </mat-tab>
-
-            <mat-tab label="Cancelled ({{ cancelledCourses.length }})">
-                <div class="courses-list">
-                    @if (cancelledCourses.length === 0) {
-                        <div class="empty">
-                            <mat-icon>cancel</mat-icon>
-                            <p>No cancelled courses.</p>
-                        </div>
-                    }
-                    @for (course of cancelledCourses; track course.id) {
-                        <ng-container *ngTemplateOutlet="courseCard; context: { course }"></ng-container>
-                    }
+            } @else if (slotBookings().length === 0) {
+                <div class="empty">
+                    <mat-icon>people_outline</mat-icon>
+                    <p>No bookings for this slot yet.</p>
                 </div>
-            </mat-tab>
+            } @else {
+                <table mat-table [dataSource]="slotBookings()" class="bookings-table">
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef>Name</th>
+                        <td mat-cell *matCellDef="let b">{{ b.firstName }} {{ b.lastName }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="email">
+                        <th mat-header-cell *matHeaderCellDef>Email</th>
+                        <td mat-cell *matCellDef="let b">{{ b.email }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                        <td mat-cell *matCellDef="let b">
+              <span class="status" [class]="b.status.toLowerCase()">
+                {{ b.status }}
+                  @if (b.waitlistPosition) {
+                      #{{ b.waitlistPosition }}
+                  }
+              </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                        <td mat-cell *matCellDef="let b">
+                            {{ b.isGuest ? 'Guest' : 'Member' }}
+                        </td>
+                    </ng-container>
 
-        </mat-tab-group>
+                    <tr mat-header-row *matHeaderRowDef="['name', 'email', 'status', 'type']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'status', 'type']"></tr>
+                </table>
+            }
+        </div>
     }
 </div>
 
@@ -64,18 +167,32 @@
             <div class="course-header">
                 <div>
                     <h3>{{ course.name }}</h3>
-                    <p class="meta">{{ course.city }} · {{ course.slotDurationMinutes }} min · {{ course.capacityPerSlot }} spots</p>
+                    <p class="meta">{{ course.city }} · {{ course.slotDurationMinutes }} min
+                        · {{ course.capacityPerSlot }} spots</p>
                 </div>
                 <span class="status" [class]="course.status.toLowerCase()">{{ course.status }}</span>
             </div>
 
-            @if (course.imageUrls.length > 0) {
-                <div class="images">
-                    @for (url of course.imageUrls; track url) {
-                        <img [src]="url" [alt]="course.name">
-                    }
-                </div>
-            }
+            <!-- Images -->
+            <div class="images">
+                @for (image of course.images; track image.id) {
+                    <div class="image-wrapper">
+                        <img [src]="image.url" [alt]="course.name">
+                        <button mat-icon-button class="delete-image"
+                                (click)="deleteImage(course, image)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                }
+                @if (course.images.length < 6 && course.status !== 'CANCELLED') {
+                    <label class="upload-box">
+                        <mat-icon>add_photo_alternate</mat-icon>
+                        <span>Add image</span>
+                        <input type="file" accept="image/jpeg,image/png" hidden
+                               (change)="uploadImage(course, $event)">
+                    </label>
+                }
+            </div>
 
             <div class="actions">
                 @if (course.status === 'DRAFT') {
@@ -83,18 +200,23 @@
                             [disabled]="actionInProgress() === course.id"
                             (click)="publish(course)">
                         @if (actionInProgress() === course.id) {
-                            <mat-spinner diameter="16" />
+                            <mat-spinner diameter="16"/>
                         } @else {
                             Publish
                         }
                     </button>
                 }
                 @if (course.status === 'ACTIVE') {
+                    <button mat-stroked-button
+                            (click)="viewSlots(course)">
+                        <mat-icon>people</mat-icon>
+                        View bookings
+                    </button>
                     <button mat-stroked-button color="warn"
                             [disabled]="actionInProgress() === course.id"
                             (click)="cancel(course)">
                         @if (actionInProgress() === course.id) {
-                            <mat-spinner diameter="16" />
+                            <mat-spinner diameter="16"/>
                         } @else {
                             Cancel course
                         }

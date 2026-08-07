@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/courses/**").permitAll()
                         .requestMatchers("/my-bookings").permitAll()
                         .requestMatchers("/provider/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         // backend
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/courses/**").permitAll()

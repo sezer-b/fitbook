@@ -1,6 +1,6 @@
 package dev.babat.spring.backend.booking.dto;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface SlotBookingProjection {
@@ -10,7 +10,7 @@ public interface SlotBookingProjection {
 
     Integer getWaitlistPosition();
 
-    OffsetDateTime getBookedAt();
+    LocalDateTime getBookedAt();
 
     String getGuestFirstName();
 

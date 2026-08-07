@@ -47,6 +47,8 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: ''
+        loadComponent: () =>
+            import('./shared/components/not-found/not-found.component')
+                .then(m => m.NotFoundComponent)
     }
 ];

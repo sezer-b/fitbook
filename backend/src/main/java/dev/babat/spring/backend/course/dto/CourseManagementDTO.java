@@ -22,7 +22,8 @@ public record CourseManagementDTO(
         LocalDate startDate,
         LocalDate endDate,
         String status,
-        List<String> imageUrls,
+        List<CourseImageDTO> images,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
-) {}
+) {
+}

@@ -42,4 +42,7 @@ public interface CourseSlotRepository extends JpaRepository<CourseSlotEntity, UU
         )
         """, nativeQuery = true)
     void deleteUnbookedFutureSlots(@Param("courseId") UUID courseId, @Param("from") LocalDate from);
+
+    List<CourseSlotEntity> findByCourseIdAndSlotDateGreaterThanEqualOrderBySlotDateAscStartTimeAsc(
+            UUID courseId, LocalDate date);
 }

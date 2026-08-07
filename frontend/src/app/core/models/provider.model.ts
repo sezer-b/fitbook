@@ -3,6 +3,12 @@ export interface ScheduleRule {
     startTime: string;
 }
 
+export interface CourseImage {
+    id: string;
+    url: string;
+    displayOrder: number;
+}
+
 export interface ProviderCourse {
     id: string;
     name: string;
@@ -18,7 +24,7 @@ export interface ProviderCourse {
     startDate: string;
     endDate: string;
     status: string;
-    imageUrls: string[];
+    images: CourseImage[];
     createdAt: string;
     updatedAt: string;
 }

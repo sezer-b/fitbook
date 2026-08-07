@@ -91,9 +91,10 @@ public class CourseImageService {
         CourseImageEntity image = courseImageRepository.findById(imageId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found"));
 
-        Path filePath = Paths.get(uploadDir).resolve(
-                image.getUrl().replace(baseUrl + "/", "")
-        );
+        String relativePath = image.getUrl()
+                .replace(baseUrl + "/uploads/", "");
+
+        Path filePath = Paths.get(uploadDir).resolve(relativePath);
 
         try {
             Files.deleteIfExists(filePath);

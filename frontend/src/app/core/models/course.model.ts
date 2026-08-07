@@ -35,3 +35,11 @@ export interface CourseDetail {
     imageUrls: string[];
     slotsByDate: Record<string, SlotDto[]>;
 }
+
+export interface CourseSlot {
+    id: string;
+    slotDate: string;
+    startTime: string;
+    endTime: string;
+    status: string;
+}

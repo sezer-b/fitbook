@@ -1,14 +1,12 @@
 package dev.babat.spring.backend.course.service;
 
-import dev.babat.spring.backend.course.dto.CourseManagementDTO;
-import dev.babat.spring.backend.course.dto.CreateCourseRequest;
-import dev.babat.spring.backend.course.dto.UpdateCourseRequest;
+import dev.babat.spring.backend.course.dto.*;
 import dev.babat.spring.backend.course.entity.CourseEntity;
-import dev.babat.spring.backend.course.entity.CourseImageEntity;
 import dev.babat.spring.backend.course.entity.CourseStatus;
 import dev.babat.spring.backend.course.repository.CategoryRepository;
 import dev.babat.spring.backend.course.repository.CourseImageRepository;
 import dev.babat.spring.backend.course.repository.CourseRepository;
+import dev.babat.spring.backend.course.repository.CourseSlotRepository;
 import dev.babat.spring.backend.provider.entity.ProviderEntity;
 import dev.babat.spring.backend.provider.repository.ProviderRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +32,7 @@ public class CourseManagementService {
     private final CategoryRepository categoryRepository;
     private final ProviderRepository providerRepository;
     private final SlotGeneratorService slotGeneratorService;
+    private final CourseSlotRepository courseSlotRepository;
 
     private static final GeometryFactory GEOMETRY_FACTORY =
             new GeometryFactory(new PrecisionModel(), 4326);
@@ -151,10 +151,10 @@ public class CourseManagementService {
     }
 
     private CourseManagementDTO toManagementDto(CourseEntity course) {
-        List<String> imageUrls = courseImageRepository
+        List<CourseImageDTO> images = courseImageRepository
                 .findByCourseIdOrderByDisplayOrderAsc(course.getId())
                 .stream()
-                .map(CourseImageEntity::getUrl)
+                .map(i -> new CourseImageDTO(i.getId(), i.getUrl(), i.getDisplayOrder()))
                 .toList();
 
         return new CourseManagementDTO(
@@ -172,10 +172,22 @@ public class CourseManagementService {
                 course.getStartDate(),
                 course.getEndDate(),
                 course.getStatus().name(),
-                imageUrls,
+                images,
                 course.getCreatedAt(),
                 course.getUpdatedAt()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<CourseSlotDTO> getUpcomingSlots(UUID courseId, UUID providerId) {
+        courseRepository.findByIdAndProviderId(courseId, providerId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+
+        return courseSlotRepository.findByCourseIdAndSlotDateGreaterThanEqualOrderBySlotDateAscStartTimeAsc(
+                        courseId, LocalDate.now())
+                .stream()
+                .map(s -> new CourseSlotDTO(s.getId(), s.getSlotDate(), s.getStartTime(), s.getEndTime(), s.getStatus().name()))
+                .toList();
     }
 
     private Point createPoint(double lng, double lat) {

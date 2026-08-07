@@ -7,6 +7,7 @@ import dev.babat.spring.backend.course.repository.CourseImageRepository;
 import dev.babat.spring.backend.course.repository.CourseRepository;
 import dev.babat.spring.backend.course.repository.CourseSlotRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

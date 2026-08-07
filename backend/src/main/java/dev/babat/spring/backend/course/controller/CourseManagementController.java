@@ -3,6 +3,7 @@ package dev.babat.spring.backend.course.controller;
 import dev.babat.spring.backend.booking.dto.SlotBookingDTO;
 import dev.babat.spring.backend.booking.service.BookingService;
 import dev.babat.spring.backend.course.dto.CourseManagementDTO;
+import dev.babat.spring.backend.course.dto.CourseSlotDTO;
 import dev.babat.spring.backend.course.dto.CreateCourseRequest;
 import dev.babat.spring.backend.course.dto.UpdateCourseRequest;
 import dev.babat.spring.backend.course.service.CourseImageService;
@@ -81,6 +82,12 @@ public class CourseManagementController {
     public List<SlotBookingDTO> getSlotBookings(@PathVariable(name = "slotId") UUID slotId,
                                                 Authentication authentication) {
         return bookingService.getBookingsForSlot(slotId, providerId(authentication));
+    }
+
+    @GetMapping("/{id}/slots")
+    public List<CourseSlotDTO> getCourseSlots(@PathVariable(name= "id") UUID id,
+                                              Authentication authentication) {
+        return courseManagementService.getUpcomingSlots(id, providerId(authentication));
     }
 
     private UUID providerId(Authentication authentication) {
